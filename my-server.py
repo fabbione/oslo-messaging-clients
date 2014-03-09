@@ -62,7 +62,7 @@ class TestEndpoint02(object):
 
 def handle_config_option(option, opt_string, opt_value, parser):
     name, value = opt_value
-    setattr(cfg.CONF, name, value)
+    setattr(cfg.CONF, name, int(float(value)))
 
 def main(argv=None):
 
