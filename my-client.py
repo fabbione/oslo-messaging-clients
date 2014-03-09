@@ -98,6 +98,7 @@ def main(argv=None):
                     "time": time.ctime(),
                     "cast": opts.cast}
 
+    start = time.time()
     repeat = 0
     while opts.repeat == 0 or repeat < opts.repeat:
         try:
@@ -111,6 +112,10 @@ def main(argv=None):
             return -1
         repeat += 1
 
+    stop = time.time()
+    delta = (stop - start)
+    pktsec = (repeat / delta)
+    print ("Payload file: %s\nPacket sent/received: %s\nTime (sec): %s\nPackets/sec: %s" % (opts.payload, repeat, delta, pktsec))
     # @todo Need this until synchronous send available
     transport.cleanup()
 
