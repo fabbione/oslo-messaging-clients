@@ -1,0 +1,41 @@
+cat > /etc/yum.repos.d/epel6.repo << EOF
+[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=\$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=0
+EOF
+
+yum install python-pip /usr/include/yaml.h git
+
+pip install oslo.messaging
+pip install kombu
+
+git clone https://github.com/fabbione/oslo-messaging-clients.git
+
+cd oslo-messaging-clients
+
+Example:
+# start qpid server on one terminal:
+./my-server.py test --quiet --config qpid_heartbeat 2.0 --url qpid://vip-qpid:5672 
+
+# fire up qpid client on another terminal
+export messages=10000
+for i in 0 1 2 4 8 16 32 64 128; do
+echo "Benchmark LB (qpid) $messages $i KB msgs"
+./my-client.py my-topic --payload=${i}k_payload --quiet --url qpid://vip-qpid:5672 --repeat=$messages methodA arg1 arg2 2>/dev/null
+done
+
+# start rabbitmq server on one termina:
+./my-server.py test --quiet --url rabbit://vip-rabbitmq:5672
+
+# fire up rabbitmq client on another terminal
+export messages=10000
+for i in 0 1 2 4 8 16 32 64 128; do
+echo "Benchmark LB (RabbitMQ) 100 $i KB msgs"
+./my-client.py my-topic --payload=${i}k_payload --quiet --url rabbit://vip-rabbitmq:5672 --repeat=100 methodA arg1 arg2
+done
+
+# rabbitmq/qpid setups are documented here:
+https://github.com/fabbione/rhos-ha-deploy/tree/master/rhos4/mrgcloud-setup
