@@ -18,7 +18,7 @@ cd oslo-messaging-clients
 
 Example:
 # start qpid server on one terminal:
-./my-server.py test --quiet --config qpid_heartbeat 2.0 --url qpid://vip-qpid:5672 
+./my-server.py test --quiet --config qpid_heartbeat 2 --url qpid://vip-qpid:5672 
 
 # fire up qpid client on another terminal
 export messages=10000
