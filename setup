@@ -21,9 +21,8 @@ Example:
 ./my-server.py test --quiet --config qpid_heartbeat 2 --url qpid://vip-qpid:5672 
 
 # fire up qpid client on another terminal
-export messages=10000
+export messages=1000
 for i in 0 1 2 4 8 16 32 64 128; do
-echo "Benchmark LB (qpid) $messages $i KB msgs"
 ./my-client.py my-topic --payload=${i}k_payload --quiet --url qpid://vip-qpid:5672 --repeat=$messages methodA arg1 arg2 
 done
 
@@ -31,10 +30,29 @@ done
 ./my-server.py test --quiet --url rabbit://vip-rabbitmq:5672
 
 # fire up rabbitmq client on another terminal
-export messages=10000
+export messages=1000
 for i in 0 1 2 4 8 16 32 64 128; do
-echo "Benchmark LB (RabbitMQ) $messages $i KB msgs"
 ./my-client.py my-topic --payload=${i}k_payload --quiet --url rabbit://vip-rabbitmq:5672 --repeat=$messages methodA arg1 arg2
+done
+
+# qpid testing
+qpid-perftest .. use different payload size for 1000 packets, both LB and non-LB, clustered and non clustered
+
+# rabbit testing
+yum install mercurial junit ant-junit
+
+hg clone http://hg.rabbitmq.com/rabbitmq-codegen/
+hg clone http://hg.rabbitmq.com/rabbitmq-java-client/
+
+cd rabbitmq-java-client/
+ant dist
+cd build/dist
+chmod 755 *.sh
+
+for i in 0 1 2 4 8 16 32 64 128; do
+size=$(expr $i \* 1024)
+echo "Payload: $size"
+./runjava.sh  com.rabbitmq.examples.PerfTest -h amqp://vip-rabbitmq:5672 -b 2 -i 20  -z 10 -s $size
 done
 
 # rabbitmq/qpid setups are documented here:
