@@ -9,9 +9,9 @@ from oslo.config import cfg
 from oslo import messaging
 
 loggy = logging.getLogger(__name__)
-loggy.setLevel(logging.DEBUG)
+loggy.setLevel(logging.WARNING)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.WARNING)
 loggy.addHandler(ch)
 
 quiet = False
@@ -97,7 +97,7 @@ def main(argv=None):
 
     if not quiet: print "Running server, name=%s exchange=%s topic=%s namespace=%s" % (
             server_name, opts.exchange, opts.topic, opts.namespace)
-    logging.basicConfig(level=logging.INFO)  #make this an option
+    logging.basicConfig(level=logging.WARNING)  #make this an option
 
     transport = messaging.get_transport(cfg.CONF, url=opts.url)
 

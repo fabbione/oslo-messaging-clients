@@ -9,9 +9,9 @@ from oslo.config import cfg
 from oslo import messaging
 
 loggy = logging.getLogger(__name__)
-loggy.setLevel(logging.DEBUG)
+loggy.setLevel(logging.WARNING)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.WARNING)
 loggy.addHandler(ch)
 
 def handle_config_option(option, opt_string, opt_value, parser):
@@ -58,7 +58,7 @@ def main(argv=None):
             topic, opts.server, opts.exchange, opts.namespace, str(opts.fanout))
 
 
-    logging.basicConfig(level=logging.INFO)  #make this an option
+    logging.basicConfig(level=logging.WARNING)  #make this an option
     method = None
     args = {}
     if extra:
