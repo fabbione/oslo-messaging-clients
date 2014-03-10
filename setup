@@ -55,5 +55,28 @@ echo "Payload: $size"
 ./runjava.sh  com.rabbitmq.examples.PerfTest -h amqp://vip-rabbitmq:5672 -b 2 -i 20  -z 10 -s $size
 done
 
+# use this script to generate totals from javarun.
+
+#!/bin/bash
+
+cat sum |grep -v starting | { while read line; do
+        mode=$(echo $line | awk '{print $1}')
+        echo $line
+        case $mode in
+                Payload:)
+                ;;
+                sending)
+                        send=$(echo $line | awk '{print $4}')
+                ;;
+                recving)
+                        recv=$(echo $line | awk '{print $4}')
+                        total=$((recv + send))
+                        echo "Total: $total"
+                ;;
+        esac
+        done;
+}
+
+
 # rabbitmq/qpid setups are documented here:
 https://github.com/fabbione/rhos-ha-deploy/tree/master/rhos4/mrgcloud-setup
