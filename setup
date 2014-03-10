@@ -41,7 +41,7 @@ qpid-perftest .. use different payload size for 1000 packets, both LB and non-LB
 # generate average transaction from qpid-perftest output
 #!/bin/bash
 
-cat sum "Total 1000000" | { while read line; do
+cat sum | grep "Total 1000000" | { while read line; do
         payload=$(echo $line | awk '{print $5}')
         timer=$(echo $line | awk '{print $8}')
         average=$(echo "scale=4; (1000000 / $timer) / 2" | bc)
