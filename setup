@@ -38,6 +38,18 @@ done
 # qpid testing
 qpid-perftest .. use different payload size for 1000 packets, both LB and non-LB, clustered and non clustered
 
+# generate average transaction from qpid-perftest output
+#!/bin/bash
+
+cat sum "Total 1000000" | { while read line; do
+        payload=$(echo $line | awk '{print $5}')
+        timer=$(echo $line | awk '{print $8}')
+        average=$(echo "scale=4; (1000000 / $timer) / 2" | bc)
+        echo $line
+        echo Average transactions: $average
+        done;
+}
+
 # rabbit testing
 yum install mercurial junit ant-junit
 
@@ -70,7 +82,7 @@ cat sum |grep -v starting | { while read line; do
                 ;;
                 recving)
                         recv=$(echo $line | awk '{print $4}')
-                        total=$((recv + send))
+                        total=$(echo "scale=4; ($recv + $send) / 2" | bc)
                         echo "Total: $total"
                 ;;
         esac
